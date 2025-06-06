@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Estudos Premium</title>
+    <style>
+        :root {
+            --primary-color: #a100ff;
+            --primary-dark: #7a00c2;
+            --primary-light: #c64bff;
+            --background-dark: #0a0a12;
+            --background-light: #1e1e2e;
+            --card-bg: #252538;
+            --text-primary: #f0f0f5;
+            --text-secondary: #b0b0c0;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196f3;
+            --border-radius: 16px;
+            --box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --glass-effect: rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="light"] {
+            --background-dark: #f5f5ff;
+            --background-light: #ffffff;
+            --card-bg: #f0f0fa;
+            --text-primary: #333344;
+            --text-secondary: #666677;
+            --box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --glass-effect: rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+            transition: var(--transition);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(161, 0, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 30%, rgba(76, 175, 80, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 50% 80%, rgba(33, 150, 243, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: twinkle var(--duration, 5s) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .today-info {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .today-info span {
+            color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: var(--card-bg);
+            border: none;
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .progress-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+            transition: var(--transition);
+        }
+
+        .progress-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: var(--primary-light);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #333344;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .subject-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .subject-btn {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(161, 0, 255, 0.3);
+        }
+
+        .subject-btn i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .topics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: rgba(161, 0, 255, 0.1);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .topic-item:hover {
+            background-color: rgba(161, 0, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .topic-item input {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            appearance: none;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .topic-item input:checked {
+            background-color: var(--primary-color);
+        }
+
+        .topic-item input:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .topic-item label {
+            cursor: pointer;
+            flex-grow: 1;
+            font-weight: 500;
+        }
+
+        .topic-item.completed {
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+
+        .topic-item.completed label {
+            text-decoration: line-through;
+            color: var(--success-color);
+        }
+
+        .topic-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .topic-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .topic-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(161, 0, 255, 0.3);
+        }
+
+        button.reset {
+            background: linear-gradient(135deg, #ff5252, #d32f2f);
+        }
+
+        button.reset:hover {
+            box-shadow: 0 8px 20px rgba(255, 82, 82, 0.3);
+        }
+
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .achievement {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .achievement.locked {
+            opacity: 0.6;
+        }
+
+        .achievement.locked .achievement-icon {
+            background-color: var(--text-secondary);
+        }
+
+        .achievement.locked .achievement-title {
+            color: var(--text-secondary);
+        }
+
+        .achievement-progress {
+            width: 100%;
+            height: 6px;
+            background-color: #333344;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .achievement-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .calendar-day {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .calendar-day:hover {
+            background-color: rgba(161, 0, 255, 0.2);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.active {
+            background-color: rgba(161, 0, 255, 0.4);
+            font-weight: bold;
+        }
+
+        .calendar-day-name {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .calendar-day-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .reminder-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        input, select {
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--glass-effect);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(161, 0, 255, 0.2);
+        }
+
+        .reminder-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reminder-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .reminder-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23b0b0c0' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 15px center;
+            background-size: 16px;
+        }
+
+        .calculator {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+        }
+
+        .calculator-display {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: var(--text-primary);
+        }
+
+        .calculator-keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calculator-btn {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: rgba(161, 0, 255, 0.2);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calculator-btn:hover {
+            background-color: rgba(161, 0, 255, 0.3);
+        }
+
+        .calculator-btn.operator {
+            background-color: rgba(76, 175, 80, 0.2);
+        }
+
+        .calculator-btn.operator:hover {
+            background-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .calculator-btn.clear {
+            background-color: rgba(255, 82, 82, 0.2);
+        }
+
+        .calculator-btn.clear:hover {
+            background-color: rgba(255, 82, 82, 0.3);
+        }
+
+        .calculator-btn.equals {
+            background-color: rgba(33, 150, 243, 0.2);
+            grid-column: span 2;
+        }
+
+        .calculator-btn.equals:hover {
+            background-color: rgba(33, 150, 243, 0.3);
+        }
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            background-color: var(--card-bg);
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            background-color: var(--glass-effect);
+            border: 1px solid var(--glass-effect);
+            border-bottom: none;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--glass-effect);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .today-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .subject-menu {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .topics-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>No Void Nasce um Espírito de Sabedoria</h1>
+                <p>Seu painel premium de acompanhamento de estudos</p>
+            </div>
+        </header>
+
+        <div class="today-info">
+            <div id="today-subject"></div>
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span> <span id="themeText">Modo Escuro</span>
+            </button>
+        </div>
+
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="progress-card">
+                    <h3>Menu de Matérias</h3>
+                    <div class="subject-menu" id="subjectMenu">
+                        <!-- Preenchido por JavaScript -->
+                    </div>
+                </div>
+
+                <div class="progress-card">
+                    <h3>Calendário de Estudos</h3>
+                    <div class="calendar" id="calendar">
+                        <!-- Preenchido por JavaScript -->
+                    </div>
+                </div>
+
+                <div class="progress-card">
+                    <h3>Lembretes</h3>
+                    <div class="reminder-form" id="reminderForm">
+                        <div class="form-group">
+                            <label for="reminderSubject">Matéria</label>
+                            <select id="reminderSubject">
+                                <option value="Matemática">Matemática</option>
+                                <option value="Português">Português</option>
+                                <option value="História">História</option>
+                                <option value="Geografia">Geografia</option>
+                                <option value="Ciências">Ciências</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reminderTime">Horário</label>
+                            <input type="time" id="reminderTime" required>
+                        </div>
+                        <button id="addReminder">Adicionar Lembrete</button>
+                    </div>
+                    <div class="reminder-list" id="reminderList">
+                        <!-- Preenchido por JavaScript -->
+                    </div>
+                </div>
+
+                <div class="progress-card calculator">
+                    <h3>Calculadora</h3>
+                    <input type="text" class="calculator-display" id="calcDisplay" readonly>
+                    <div class="calculator-keys">
+                        <button class="calculator-btn clear" onclick="clearCalculator()">C</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('7')">7</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('8')">8</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('9')">9</button>
+                        <button class="calculator-btn operator" onclick="appendToCalculator('/')">/</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('4')">4</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('5')">5</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('6')">6</button>
+                        <button class="calculator-btn operator" onclick="appendToCalculator('*')">×</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('1')">1</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('2')">2</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('3')">3</button>
+                        <button class="calculator-btn operator" onclick="appendToCalculator('-')">-</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('0')">0</button>
+                        <button class="calculator-btn" onclick="appendToCalculator('.')">.</button>
+                        <button class="calculator-btn equals" onclick="calculate()">=</button>
+                        <button class="calculator-btn operator" onclick="appendToCalculator('+')">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="tab-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="progress">Progresso</div>
+                        <div class="tab" data-tab="achievements">Conquistas</div>
+                        <div class="tab" data-tab="stats">Estatísticas</div>
+                        <div class="tab" data-tab="resources">Recursos</div>
+                    </div>
+
+                    <div class="tab-content active" id="progressTab">
+                        <div class="progress-card">
+                            <div class="progress-header">
+                                <h2>Progresso Geral</h2>
+                                <span class="progress-text" id="overallProgressText">0% completo</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="overallProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="search-bar">
+                            <input type="text" id="searchInput" placeholder="Pesquisar tópicos...">
+                        </div>
+
+                        <div class="subjects-container" id="subjectsContainer">
+                            <!-- Preenchido por JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="achievementsTab">
+                        <h3>Suas Conquistas</h3>
+                        <div class="achievements" id="achievementsContainer">
+                            <!-- Preenchido por JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="statsTab">
+                        <h3>Estatísticas de Estudo</h3>
+                        <div class="stats-container">
+                            <div class="stat-card">
+                                <div class="stat-value" id="streakDays">0</div>
+                                <div class="stat-label">Dias consecutivos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalCompleted">0</div>
+                                <div class="stat-label">Tópicos completos</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalHours">0</div>
+                                <div class="stat-label">Horas estimadas</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="masteryLevel">0%</div>
+                                <div class="stat-label">Nível de domínio</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="resourcesTab">
+                        <h3>Recursos de Estudo</h3>
+                        <div class="topics-container" id="resourcesContainer">
+                            <!-- Preenchido por JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="saveProgress">Salvar Progresso</button>
+                    <button class="reset" id="resetProgress">Resetar Progresso</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            Painel de Estudos Premium • Desenvolvido para sua jornada de conhecimento
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurações iniciais
+            const subjects = {
+                'Matemática': {
+                    day: 'Segunda',
+                    icon: 'fas fa-square-root-alt',
+                    topics: [
+                        { name: 'Porcentagem', resources: [
+                            { type: 'video', title: 'Porcentagem - Matemática Básica', url: 'https://www.youtube.com/watch?v=uJ6hKTHl_9o' },
+                            { type: 'article', title: 'Guia Completo de Porcentagem', url: 'https://pt.wikipedia.org/wiki/Porcentagem' }
+                        ]},
+                        { name: 'Regra de três', resources: [
+                            { type: 'video', title: 'Regra de Três Simples e Composta', url: 'https://www.youtube.com/watch?v=ZU3QBiYyLhc' }
+                        ]},
+                        { name: 'Equações de 1º grau', resources: [] },
+                        { name: 'Equações de 2º grau', resources: [] },
+                        { name: 'Função afim', resources: [] },
+                        { name: 'Função quadrática', resources: [] },
+                        { name: 'Geometria plana', resources: [] },
+                        { name: 'Potência e raiz', resources: [] },
+                        { name: 'Progressões (PA e PG)', resources: [] }
+                    ]
+                },
+                'Português': {
+                    day: 'Terça',
+                    icon: 'fas fa-book',
+                    topics: [
+                        { name: 'Interpretação de texto', resources: [] },
+                        { name: 'Classes gramaticais', resources: [] },
+                        { name: 'Sujeito e predicado', resources: [] },
+                        { name: 'Período simples e composto', resources: [] },
+                        { name: 'Pontuação', resources: [] },
+                        { name: 'Crase', resources: [] },
+                        { name: 'Ortografia', resources: [] },
+                        { name: 'Figuras de linguagem', resources: [] },
+                        { name: 'Funções da linguagem', resources: [] }
+                    ]
+                },
+                'História': {
+                    day: 'Quarta',
+                    icon: 'fas fa-landmark',
+                    topics: [
+                        { name: 'Brasil Colônia', resources: [] },
+                        { name: 'Brasil Império', resources: [] },
+                        { name: 'Brasil República', resources: [] },
+                        { name: 'Idade Moderna', resources: [] },
+                        { name: 'Idade Contemporânea', resources: [] },
+                        { name: 'Guerras Mundiais', resources: [] },
+                        { name: 'Ditadura Militar', resources: [] },
+                        { name: 'Globalização', resources: [] }
+                    ]
+                },
+                'Geografia': {
+                    day: 'Quarta',
+                    icon: 'fas fa-globe-americas',
+                    topics: [
+                        { name: 'Relevo', resources: [] },
+                        { name: 'Clima', resources: [] },
+                        { name: 'Vegetação', resources: [] },
+                        { name: 'Países desenvolvidos e subdesenvolvidos', resources: [] },
+                        { name: 'Industrialização', resources: [] },
+                        { name: 'Globalização', resources: [] },
+                        { name: 'Impactos ambientais', resources: [] },
+                        { name: 'Demografia', resources: [] }
+                    ]
+                },
+                'Ciências': {
+                    day: 'Quinta',
+                    icon: 'fas fa-flask',
+                    topics: [
+                        { name: 'Física: Movimento e velocidade', resources: [] },
+                        { name: 'Física: Força e trabalho', resources: [] },
+                        { name: 'Química: Matéria e transformação', resources: [] },
+                        { name: 'Química: Tabela periódica', resources: [] },
+                        { name: 'Biologia: Células', resources: [] },
+                        { name: 'Biologia: Genética básica', resources: [] },
+                        { name: 'Ecossistemas', resources: [] },
+                        { name: 'Cadeias alimentares', resources: [] },
+                        { name: 'Sustentabilidade', resources: [] }
+                    ]
+                }
+            };
+
+            const achievements = [
+                { id: 'first_steps', title: 'Primeiros Passos', description: 'Complete seu primeiro tópico de estudo', icon: 'fas fa-baby', completed: false },
+                { id: 'math_beginner', title: 'Iniciante em Matemática', description: 'Complete 5 tópicos de Matemática', icon: 'fas fa-calculator', completed: false, progress: 0, target: 5 },
+                { id: 'week_streak', title: 'Semana Produtiva', description: 'Estude por 7 dias consecutivos', icon: 'fas fa-fire', completed: false, progress: 0, target: 7 },
+                { id: 'subject_master', title: 'Mestre de Uma Matéria', description: 'Complete todos os tópicos de uma matéria',                icon: 'fas fa-crown', completed: false },
+                { id: 'half_way', title: 'No Caminho', description: 'Complete 50% de todos os tópicos', icon: 'fas fa-road', completed: false, progress: 0, target: 50 },
+                { id: 'all_done', title: 'Concluído!', description: 'Complete todos os tópicos de estudo', icon: 'fas fa-trophy', completed: false }
+            ];
+
+            const resources = [
+                { title: 'Khan Academy', description: 'Plataforma de ensino gratuito com diversos cursos', url: 'https://pt.khanacademy.org/', icon: 'fas fa-graduation-cap' },
+                { title: 'Coursera', description: 'Cursos online de universidades renomadas', url: 'https://www.coursera.org/', icon: 'fas fa-university' },
+                { title: 'YouTube Edu', description: 'Canais educacionais no YouTube', url: 'https://www.youtube.com/education', icon: 'fab fa-youtube' },
+                { title: 'Fórmula de Bhaskara', description: 'Explicação detalhada da fórmula de Bhaskara', url: 'https://pt.wikipedia.org/wiki/Equa%C3%A7%C3%A3o_quadr%C3%A1tica', icon: 'fas fa-square-root-alt' },
+                { title: 'Gramática Online', description: 'Site completo sobre gramática portuguesa', url: 'https://www.gramaticaonline.com.br/', icon: 'fas fa-book' },
+                { title: 'Atlas Histórico', description: 'Mapas históricos interativos', url: 'https://www.atlashistorico.com.br/', icon: 'fas fa-map' }
+            ];
+
+            // Estado da aplicação
+            let state = {
+                completedTopics: JSON.parse(localStorage.getItem('completedTopics')) || {},
+                reminders: JSON.parse(localStorage.getItem('reminders')) || [],
+                studyStreak: parseInt(localStorage.getItem('studyStreak')) || 0,
+                lastStudyDate: localStorage.getItem('lastStudyDate') || null,
+                theme: localStorage.getItem('theme') || 'dark'
+            };
+
+            // Elementos DOM
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            const subjectMenu = document.getElementById('subjectMenu');
+            const subjectsContainer = document.getElementById('subjectsContainer');
+            const searchInput = document.getElementById('searchInput');
+            const todaySubject = document.getElementById('today-subject');
+            const calendar = document.getElementById('calendar');
+            const reminderForm = document.getElementById('reminderForm');
+            const reminderList = document.getElementById('reminderList');
+            const addReminderBtn = document.getElementById('addReminder');
+            const overallProgressText = document.getElementById('overallProgressText');
+            const overallProgressBar = document.getElementById('overallProgressBar');
+            const achievementsContainer = document.getElementById('achievementsContainer');
+            const streakDays = document.getElementById('streakDays');
+            const totalCompleted = document.getElementById('totalCompleted');
+            const totalHours = document.getElementById('totalHours');
+            const masteryLevel = document.getElementById('masteryLevel');
+            const resourcesContainer = document.getElementById('resourcesContainer');
+            const saveProgressBtn = document.getElementById('saveProgress');
+            const resetProgressBtn = document.getElementById('resetProgress');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Inicialização
+            initTheme();
+            renderSubjectMenu();
+            renderSubjects();
+            renderAchievements();
+            renderCalendar();
+            renderReminders();
+            updateStats();
+            renderResources();
+            updateTodaySubject();
+            createStars();
+
+            // Event listeners
+            themeToggle.addEventListener('click', toggleTheme);
+            searchInput.addEventListener('input', filterTopics);
+            addReminderBtn.addEventListener('click', addReminder);
+            saveProgressBtn.addEventListener('click', saveProgress);
+            resetProgressBtn.addEventListener('click', resetProgress);
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // Funções
+            function initTheme() {
+                if (state.theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Modo Claro';
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Modo Escuro';
+                }
+            }
+
+            function toggleTheme() {
+                if (state.theme === 'dark') {
+                    state.theme = 'light';
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Modo Claro';
+                } else {
+                    state.theme = 'dark';
+                    document.documentElement.removeAttribute('data-theme');
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Modo Escuro';
+                }
+                localStorage.setItem('theme', state.theme);
+            }
+
+            function renderSubjectMenu() {
+                subjectMenu.innerHTML = '';
+                for (const subject in subjects) {
+                    const subjectData = subjects[subject];
+                    const subjectBtn = document.createElement('button');
+                    subjectBtn.className = 'subject-btn';
+                    subjectBtn.innerHTML = `
+                        <i class="${subjectData.icon}"></i>
+                        <span>${subject}</span>
+                    `;
+                    subjectBtn.addEventListener('click', () => {
+                        scrollToSubject(subject);
+                    });
+                    subjectMenu.appendChild(subjectBtn);
+                }
+            }
+
+            function renderSubjects() {
+                subjectsContainer.innerHTML = '';
+                let totalTopics = 0;
+                let completedCount = 0;
+
+                for (const subject in subjects) {
+                    const subjectData = subjects[subject];
+                    const subjectElement = document.createElement('div');
+                    subjectElement.className = 'progress-card';
+                    subjectElement.id = `subject-${subject.toLowerCase()}`;
+
+                    let subjectCompleted = 0;
+                    const topicsList = document.createElement('div');
+                    topicsList.className = 'topics-container';
+
+                    subjectData.topics.forEach(topic => {
+                        totalTopics++;
+                        const topicId = `${subject}-${topic.name}`;
+                        const isCompleted = state.completedTopics[topicId] || false;
+                        if (isCompleted) {
+                            subjectCompleted++;
+                            completedCount++;
+                        }
+
+                        const topicElement = document.createElement('div');
+                        topicElement.className = `topic-item ${isCompleted ? 'completed' : ''}`;
+                        topicElement.innerHTML = `
+                            <input type="checkbox" id="${topicId}" ${isCompleted ? 'checked' : ''}>
+                            <label for="${topicId}">${topic.name}</label>
+                            <div class="topic-actions">
+                                <button class="topic-btn" title="Recursos" onclick="showResources('${subject}', '${topic.name}')">
+                                    <i class="fas fa-book-open"></i>
+                                </button>
+                            </div>
+                        `;
+
+                        topicElement.querySelector('input').addEventListener('change', (e) => {
+                            toggleTopicCompletion(subject, topic.name, e.target.checked);
+                        });
+
+                        topicsList.appendChild(topicElement);
+                    });
+
+                    const progressPercent = Math.round((subjectCompleted / subjectData.topics.length) * 100);
+
+                    subjectElement.innerHTML = `
+                        <div class="progress-header">
+                            <h2>${subject} <span class="badge">${subjectData.day}</span></h2>
+                            <span class="progress-text">${subjectCompleted}/${subjectData.topics.length} tópicos (${progressPercent}%)</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                        </div>
+                    `;
+
+                    subjectElement.appendChild(topicsList);
+                    subjectsContainer.appendChild(subjectElement);
+                }
+
+                const overallPercent = Math.round((completedCount / totalTopics) * 100);
+                overallProgressText.textContent = `${completedCount}/${totalTopics} tópicos (${overallPercent}%)`;
+                overallProgressBar.style.width = `${overallPercent}%`;
+
+                checkAchievements();
+            }
+
+            function toggleTopicCompletion(subject, topicName, isCompleted) {
+                const topicId = `${subject}-${topicName}`;
+                if (isCompleted) {
+                    state.completedTopics[topicId] = true;
+                    createConfetti();
+                    updateStudyStreak();
+                } else {
+                    delete state.completedTopics[topicId];
+                }
+                renderSubjects();
+                updateStats();
+                saveState();
+            }
+
+            function scrollToSubject(subject) {
+                const subjectElement = document.getElementById(`subject-${subject.toLowerCase()}`);
+                if (subjectElement) {
+                    subjectElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+
+            function filterTopics() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const topicItems = document.querySelectorAll('.topic-item');
+
+                topicItems.forEach(item => {
+                    const label = item.querySelector('label').textContent.toLowerCase();
+                    if (label.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            function updateTodaySubject() {
+                const today = new Date();
+                const dayOfWeek = today.getDay(); // 0 = Domingo, 1 = Segunda, etc.
+                
+                let todaySubjects = [];
+                for (const subject in subjects) {
+                    const subjectDay = subjects[subject].day;
+                    if (
+                        (dayOfWeek === 1 && subjectDay === 'Segunda') ||
+                        (dayOfWeek === 2 && subjectDay === 'Terça') ||
+                        (dayOfWeek === 3 && subjectDay === 'Quarta') ||
+                        (dayOfWeek === 4 && subjectDay === 'Quinta') ||
+                        (dayOfWeek === 5 && subjectDay === 'Sexta')
+                    ) {
+                        todaySubjects.push(subject);
+                    }
+                }
+
+                if (todaySubjects.length > 0) {
+                    todaySubject.innerHTML = `Matéria de hoje: <span>${todaySubjects.join(', ')}</span>`;
+                } else {
+                    todaySubject.innerHTML = 'Hoje não tem matéria programada. Revise ou adiante algum conteúdo!';
+                }
+            }
+
+            function renderCalendar() {
+                calendar.innerHTML = '';
+                
+                const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                daysOfWeek.forEach(day => {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day-name';
+                    dayElement.textContent = day;
+                    calendar.appendChild(dayElement);
+                });
+
+                const today = new Date();
+                const currentDate = today.getDate();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
+                const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+                // Dias vazios no início do mês
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day';
+                    calendar.appendChild(emptyDay);
+                }
+
+                // Dias do mês
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'calendar-day-number';
+                    dayNumber.textContent = i;
+                    dayElement.appendChild(dayNumber);
+
+                    if (i === currentDate) {
+                        dayElement.classList.add('today');
+                    }
+
+                    // Verificar se há estudos nesse dia (simulação)
+                    if (Math.random() > 0.7) {
+                        dayElement.classList.add('active');
+                    }
+
+                    calendar.appendChild(dayElement);
+                }
+            }
+
+            function renderReminders() {
+                reminderList.innerHTML = '';
+                
+                if (state.reminders.length === 0) {
+                    reminderList.innerHTML = '<p>Nenhum lembrete adicionado ainda.</p>';
+                    return;
+                }
+
+                state.reminders.forEach((reminder, index) => {
+                    const reminderElement = document.createElement('div');
+                    reminderElement.className = 'reminder-item';
+                    reminderElement.innerHTML = `
+                        <div>
+                            <strong>${reminder.subject}</strong> - ${reminder.time}
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="topic-btn" onclick="deleteReminder(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    reminderList.appendChild(reminderElement);
+                });
+            }
+
+            function addReminder() {
+                const subject = document.getElementById('reminderSubject').value;
+                const time = document.getElementById('reminderTime').value;
+
+                if (!time) {
+                    alert('Por favor, selecione um horário.');
+                    return;
+                }
+
+                const reminder = {
+                    subject,
+                    time
+                };
+
+                state.reminders.push(reminder);
+                saveState();
+                renderReminders();
+                document.getElementById('reminderTime').value = '';
+            }
+
+            function deleteReminder(index) {
+                state.reminders.splice(index, 1);
+                saveState();
+                renderReminders();
+            }
+
+            function renderAchievements() {
+                achievementsContainer.innerHTML = '';
+                
+                achievements.forEach(achievement => {
+                    const achievementElement = document.createElement('div');
+                    achievementElement.className = `achievement ${achievement.completed ? '' : 'locked'}`;
+                    
+                    let progressBar = '';
+                    if (achievement.progress !== undefined) {
+                        const progressPercent = Math.min(100, (achievement.progress / achievement.target) * 100);
+                        progressBar = `
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar" style="width: ${progressPercent}%"></div>
+                            </div>
+                            <small>${achievement.progress}/${achievement.target}</small>
+                        `;
+                    }
+
+                    achievementElement.innerHTML = `
+                        <div class="achievement-icon">
+                            <i class="${achievement.icon}"></i>
+                        </div>
+                        <div class="achievement-title">${achievement.title}</div>
+                        <div class="achievement-description">${achievement.description}</div>
+                        ${progressBar}
+                    `;
+                    
+                    achievementsContainer.appendChild(achievementElement);
+                });
+            }
+
+            function checkAchievements() {
+                // Contar tópicos completos por matéria
+                const subjectCounts = {};
+                for (const subject in subjects) {
+                    subjectCounts[subject] = 0;
+                }
+
+                let totalCompleted = 0;
+                for (const topicId in state.completedTopics) {
+                    totalCompleted++;
+                    const subject = topicId.split('-')[0];
+                    if (subjectCounts[subject] !== undefined) {
+                        subjectCounts[subject]++;
+                    }
+                }
+
+                // Verificar conquistas
+                achievements.forEach(achievement => {
+                    switch (achievement.id) {
+                        case 'first_steps':
+                            if (totalCompleted > 0 && !achievement.completed) {
+                                achievement.completed = true;
+                                showAchievementNotification(achievement.title);
+                            }
+                            break;
+                        case 'math_beginner':
+                            if (subjectCounts['Matemática'] >= 5 && !achievement.completed) {
+                                achievement.completed = true;
+                                showAchievementNotification(achievement.title);
+                            }
+                            achievement.progress = subjectCounts['Matemática'];
+                            break;
+                        case 'week_streak':
+                            if (state.studyStreak >= 7 && !achievement.completed) {
+                                achievement.completed = true;
+                                showAchievementNotification(achievement.title);
+                            }
+                            achievement.progress = state.studyStreak;
+                            break;
+                        case 'subject_master':
+                            for (const subject in subjectCounts) {
+                                if (subjectCounts[subject] === subjects[subject].topics.length && !achievement.completed) {
+                                    achievement.completed = true;
+                                    showAchievementNotification(achievement.title);
+                                    break;
+                                }
+                            }
+                            break;
+                        case 'half_way':
+                            const totalTopics = Object.values(subjects).reduce((acc, curr) => acc + curr.topics.length, 0);
+                            const halfWay = Math.ceil(totalTopics * 0.5);
+                            if (totalCompleted >= halfWay && !achievement.completed) {
+                                achievement.completed = true;
+                                showAchievementNotification(achievement.title);
+                            }
+                            achievement.progress = Math.round((totalCompleted / totalTopics) * 100);
+                            break;
+                    }
+                });
+
+                renderAchievements();
+            }
+
+            function showAchievementNotification(title) {
+                const notification = document.createElement('div');
+                notification.className = 'achievement-notification';
+                notification.innerHTML = `
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div>
+                        <strong>Conquista desbloqueada!</strong>
+                        <div>${title}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            function updateStudyStreak() {
+                const today = new Date().toDateString();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toDateString();
+
+                if (state.lastStudyDate === today) {
+                    return; // Já estudou hoje
+                }
+
+                if (state.lastStudyDate === yesterdayStr) {
+                    state.studyStreak++;
+                } else if (state.lastStudyDate !== today && state.lastStudyDate !== yesterdayStr) {
+                    state.studyStreak = 1;
+                }
+
+                state.lastStudyDate = today;
+                saveState();
+                updateStats();
+            }
+
+            function updateStats() {
+                let totalCompletedCount = 0;
+                for (const topicId in state.completedTopics) {
+                    totalCompletedCount++;
+                }
+
+                streakDays.textContent = state.studyStreak;
+                totalCompleted.textContent = totalCompletedCount;
+                totalHours.textContent = Math.round(totalCompletedCount * 1.5); // Estimativa de 1.5h por tópico
+
+                const totalTopics = Object.values(subjects).reduce((acc, curr) => acc + curr.topics.length, 0);
+                const masteryPercent = Math.round((totalCompletedCount / totalTopics) * 100);
+                masteryLevel.textContent = `${masteryPercent}%`;
+            }
+
+            function renderResources() {
+                resourcesContainer.innerHTML = '';
+                
+                resources.forEach(resource => {
+                    const resourceElement = document.createElement('div');
+                    resourceElement.className = 'topic-item';
+                    resourceElement.innerHTML = `
+                        <i class="${resource.icon} fa-lg" style="margin-right: 15px;"></i>
+                        <div style="flex-grow: 1;">
+                            <strong>${resource.title}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">${resource.description}</div>
+                        </div>
+                        <a href="${resource.url}" target="_blank" class="topic-btn" title="Abrir recurso">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    `;
+                    resourcesContainer.appendChild(resourceElement);
+                });
+            }
+
+            function showResources(subject, topicName) {
+                const subjectData = subjects[subject];
+                const topic = subjectData.topics.find(t => t.name === topicName);
+                
+                if (!topic || topic.resources.length === 0) {
+                    alert(`Nenhum recurso disponível para ${topicName} no momento.`);
+                    return;
+                }
+
+                let resourcesHTML = `<h3>Recursos para ${topicName} (${subject})</h3><ul>`;
+                topic.resources.forEach(resource => {
+                    resourcesHTML += `
+                        <li>
+                            <a href="${resource.url}" target="_blank">${resource.title} (${resource.type})</a>
+                        </li>
+                    `;
+                });
+                resourcesHTML += '</ul>';
+
+                alert(resourcesHTML.replace(/<[^>]*>/g, '')); // Simples alerta sem HTML
+                // Em uma implementação real, você poderia usar um modal bonito aqui
+            }
+
+            function switchTab(tabId) {
+                tabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === tabId) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+
+                tabContents.forEach(content => {
+                    if (content.id === `${tabId}Tab`) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            }
+
+            function saveProgress() {
+                saveState();
+                alert('Progresso salvo com sucesso!');
+            }
+
+            function resetProgress() {
+                if (confirm('Tem certeza que deseja resetar todo o seu progresso? Isso não pode ser desfeito.')) {
+                    state.completedTopics = {};
+                    state.studyStreak = 0;
+                    state.lastStudyDate = null;
+                    saveState();
+                    renderSubjects();
+                    updateStats();
+                    checkAchievements();
+                    alert('Progresso resetado com sucesso.');
+                }
+            }
+
+            function saveState() {
+                localStorage.setItem('completedTopics', JSON.stringify(state.completedTopics));
+                localStorage.setItem('reminders', JSON.stringify(state.reminders));
+                localStorage.setItem('studyStreak', state.studyStreak);
+                localStorage.setItem('lastStudyDate', state.lastStudyDate);
+            }
+
+            function createStars() {
+                const count = 50;
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    
+                    // Tamanho aleatório entre 1px e 3px
+                    const size = Math.random() * 2 + 1;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    
+                    // Posição aleatória na tela
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    
+                    // Duração aleatória da animação entre 3s e 8s
+                    star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+                    
+                    // Atraso aleatório para o início da animação
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    document.body.appendChild(star);
+                }
+            }
+
+            function createConfetti() {
+                const colors = ['#a100ff', '#4caf50', '#2196f3', '#ff9800', '#ff5252'];
+                const count = 50;
+                
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Cor aleatória
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.backgroundColor = color;
+                    
+                    // Tamanho aleatório entre 5px e 10px
+                    const size = Math.random() * 5 + 5;
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    
+                    // Forma aleatória (quadrado ou círculo)
+                    if (Math.random() > 0.5) {
+                        confetti.style.borderRadius = '50%';
+                    }
+                    
+                    // Posição aleatória no topo da tela
+                    confetti.style.left = `${Math.random() * 100}%`;
+                    confetti.style.top = `-10px`;
+                    
+                    // Duração aleatória da animação entre 1s e 3s
+                    const duration = Math.random() * 2 + 1;
+                    confetti.style.animationDuration = `${duration}s`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remover após a animação terminar
+                    setTimeout(() => {
+                        document.body.removeChild(confetti);
+                    }, duration * 1000);
+                }
+            }
+        });
+
+        // Funções globais para a calculadora
+        function appendToCalculator(value) {
+            const display = document.getElementById('calcDisplay');
+            display.value += value;
+        }
+
+        function clearCalculator() {
+            document.getElementById('calcDisplay').value = '';
+        }
+
+        function calculate() {
+            const display = document.getElementById('calcDisplay');
+            try {
+                // Substituir × por * para avaliação
+                const expression = display.value.replace(/×/g, '*');
+                display.value = eval(expression);
+            } catch (e) {
+                display.value = 'Erro';
+            }
+        }
+
+        // Funções globais para serem chamadas do HTML
+        window.showResources = function(subject, topicName) {
+            document.dispatchEvent(new CustomEvent('showResources', { detail: { subject, topicName } }));
+        };
+
+        window.deleteReminder = function(index) {
+            document.dispatchEvent(new CustomEvent('deleteReminder', { detail: index }));
+        };
+    </script>
+</body>
+</html>
